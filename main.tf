@@ -54,7 +54,6 @@ resource "azurerm_container_registry" "main" {
       }
     }
   }
-
   trust_policy_enabled     = var.container_registry_config.sku == "Premium" ? var.enable_content_trust : false
   retention_policy_in_days = var.retention_policy_in_days != null && var.container_registry_config.sku == "Premium" ? var.retention_policy_in_days : null
 
@@ -169,7 +168,7 @@ resource "azurerm_private_endpoint" "pep1" {
   custom_network_interface_name = var.resource_position_prefix ? format("pe-nic-acr-%s", local.name) : format("%s-pe-nic-acr", local.name)
   private_dns_zone_group {
     name                 = var.resource_position_prefix ? format("dns-zone-group-acr-%s", local.name) : format("%s-dns-zone-group-acr", local.name)
-    private_dns_zone_ids = var.private_dns_zone_id
+    private_dns_zone_ids = [var.private_dns_zone_ids]
   }
   private_service_connection {
     name                           = var.resource_position_prefix ? format("psc-acr-%s", local.name) : format("%s-psc-acr", local.name)

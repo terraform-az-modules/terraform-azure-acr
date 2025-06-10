@@ -9,7 +9,6 @@ provider "azurerm" {
 
 data "azurerm_client_config" "current_client_config" {}
 
-
 locals {
   name        = "app"
   environment = "test"
@@ -95,7 +94,8 @@ module "vault" {
   location                      = module.resource_group.resource_group_location
   virtual_network_id            = module.vnet.vnet_id
   subnet_id                     = module.subnet.default_subnet_id[0]
-  public_network_access_enabled = false
+  public_network_access_enabled = true
+  sku_name                      = "premium"
 
   network_acls = {
     bypass         = "AzureServices"
@@ -147,7 +147,7 @@ module "container-registry" {
   key_vault_rbac_auth_enabled = true
   key_vault_id                = module.vault.id
   enable_diagnostic           = true
-  private_dns_zone_id       = module.private-dns-zone.private_dns_zone_ids.container_registry
+  private_dns_zone_ids        = module.private_dns_zone.private_dns_zone_ids.container_registry
   logs = [
     {
       category = "ContainerRegistryLoginEvents"

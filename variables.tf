@@ -150,12 +150,12 @@ variable "container_registry_webhooks" {
     scope          = string
     custom_headers = map(string)
   }))
-  default = {
-    example-webhook = {
-      service_uri = "https://example.com/webhook"
+ default = {
+    webhook = {
+      service_uri = "https://example.com/api/webhook"
       actions     = ["push", "delete"]
       status      = "enabled"
-      scope       = "repository:core/image"
+      scope       = "core:*"
       custom_headers = {
         Authorization = "Bearer exampletoken"
         X-Custom-Id   = "webhook-123"
@@ -239,42 +239,11 @@ variable "subnet_id" {
   description = "Subnet ID for the private endpoint."
 }
 
-variable "virtual_network_id" {
+variable "private_dns_zone_ids" {
   type        = string
   default     = null
-  description = "Virtual network ID for the private endpoint."
+  description = "The ID of the private DNS zone."
 }
-
-variable "private_dns_name" {
-  type        = string
-  default     = "privatelink.azurecr.io"
-  description = "Private DNS zone name for ACR private endpoint."
-}
-
-variable "existing_private_dns_zone" {
-  type        = string
-  default     = null
-  description = "Name of the existing private DNS zone."
-}
-
-variable "private_dns_zone_id" {
-  type        = list(string)
-  default     = null
-  description = "List of private DNS zone IDs to associate."
-}
-
-variable "existing_private_dns_zone_resource_group_name" {
-  type        = string
-  default     = null
-  description = "Resource group name for existing private DNS zone."
-}
-
-variable "private_dns_zone_vnet_link_registration_enabled" {
-  type        = bool
-  default     = true
-  description = "Enable auto-registration of VM records in the private DNS zone."
-}
-
 ##-----------------------------------------------------------------------------
 ## Diagnostic Settings & Monitoring
 ##-----------------------------------------------------------------------------
