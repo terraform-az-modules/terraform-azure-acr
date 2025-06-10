@@ -103,7 +103,11 @@ variable "container_registry_config" {
     zone_redundancy_enabled   = optional(bool)
   })
   description = "Configuration for Azure Container Registry."
-  default     = null
+  default = {
+    sku                       = "Premium"
+    quarantine_policy_enabled = true
+    zone_redundancy_enabled   = true
+  }
 }
 
 variable "admin_enabled" {
@@ -126,7 +130,7 @@ variable "retention_policy_in_days" {
 
 variable "enable_content_trust" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enable or disable content trust in ACR."
 }
 
@@ -147,16 +151,6 @@ variable "container_registry_webhooks" {
     custom_headers = map(string)
   }))
   default = {
-    webhook = {
-      service_uri = "https://example.com/api/webhook"
-      actions     = ["push", "delete"]
-      status      = "enabled"
-      scope       = "core:*"
-      custom_headers = {
-        Authorization = "Bearer exampletoken"
-        X-Custom-Id   = "webhook-123"
-      }
-    }
   }
   description = "Webhooks configuration for ACR."
 }
