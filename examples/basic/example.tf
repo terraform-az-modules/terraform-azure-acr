@@ -1,12 +1,10 @@
 provider "azurerm" {
   features {}
-
 }
 
 provider "azurerm" {
   features {}
   alias = "peer"
-
 }
 ##----------------------------------------------------------------------------- 
 ## ACR module call.

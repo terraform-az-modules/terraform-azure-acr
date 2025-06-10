@@ -17,7 +17,6 @@ module "labels" {
 ##-----------------------------------------------------------------------------
 ## Azure Container Registry - Deploy secure container image registry service
 ##-----------------------------------------------------------------------------
-
 resource "azurerm_container_registry" "main" {
   count                         = var.enabled ? 1 : 0
   name                          = replace(var.resource_position_prefix ? format("acr-%s", local.name) : format("%s-acr", local.name), "-", "")
@@ -36,7 +35,7 @@ resource "azurerm_container_registry" "main" {
     content {
       location                = georeplications.value.location
       zone_redundancy_enabled = georeplications.value.zone_redundancy_enabled
-      tags                    = merge({ "Name" = format("%s", "georep-${georeplications.value.location}") }, module.labels.tags, )
+      tags                    = module.labels.tags
     }
   }
 
@@ -52,7 +51,6 @@ resource "azurerm_container_registry" "main" {
           ip_range = ip_rule.value.ip_range
         }
       }
-
     }
   }
 
@@ -76,7 +74,6 @@ resource "azurerm_container_registry" "main" {
 ##-----------------------------------------------------------------------------
 ## Scope Map - Deploy token scopes for ACR access control
 ##-----------------------------------------------------------------------------
-
 resource "azurerm_container_registry_scope_map" "main" {
   for_each                = var.enabled && var.scope_map != null ? { for k, v in var.scope_map : k => v if v != null } : {}
   name                    = format("%s", each.key)
@@ -88,7 +85,6 @@ resource "azurerm_container_registry_scope_map" "main" {
 ##-----------------------------------------------------------------------------
 ## Registry Token - Deploy tokens for ACR authentication
 ##-----------------------------------------------------------------------------
-
 resource "azurerm_container_registry_token" "main" {
   for_each                = var.enabled && var.scope_map != null ? { for k, v in var.scope_map : k => v if v != null } : {}
   name                    = format("%s", "${each.key}-token")
@@ -144,7 +140,6 @@ resource "azurerm_key_vault_key" "kvkey" {
       automatic {
         time_before_expiry = "P30D"
       }
-
       expire_after         = "P90D"
       notify_before_expiry = "P29D"
     }
@@ -211,8 +206,5 @@ resource "azurerm_monitor_diagnostic_setting" "acr-diag" {
       category = lookup(metric.value, "category", null)
       enabled  = lookup(metric.value, "enabled", true)
     }
-  }
-  lifecycle {
-    ignore_changes = [enabled_log, metric]
   }
 }
