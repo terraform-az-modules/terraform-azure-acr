@@ -26,6 +26,7 @@ resource "azurerm_container_registry" "main" {
   sku                           = var.container_registry_config.sku
   public_network_access_enabled = var.public_network_access_enabled
   quarantine_policy_enabled     = var.container_registry_config.quarantine_policy_enabled
+  data_endpoint_enabled         = var.enable_data_endpoint
   zone_redundancy_enabled       = var.container_registry_config.zone_redundancy_enabled
   tags                          = module.labels.tags
   network_rule_bypass_option    = var.azure_services_bypass
@@ -123,7 +124,7 @@ resource "azurerm_key_vault_key" "kvkey" {
   count           = var.enabled && var.encryption ? 1 : 0
   name            = var.resource_position_prefix ? format("cmk-key-acr-%s", local.name) : format("%s-cmk-key-acr", local.name)
   key_vault_id    = var.key_vault_id
-  key_type        = "RSA"
+  key_type        = "RSA-HSM"
   key_size        = 2048
   expiration_date = var.key_expiration_date
   key_opts = [

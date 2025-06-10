@@ -104,15 +104,15 @@ variable "container_registry_config" {
   })
   description = "Configuration for Azure Container Registry."
   default = {
-    sku                       = "Basic"
-    quarantine_policy_enabled = false
-    zone_redundancy_enabled   = false
+    sku                       = "Premium"
+    quarantine_policy_enabled = true
+    zone_redundancy_enabled   = true
   }
 }
 
 variable "admin_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enable or disable admin access to the ACR."
 }
 
@@ -150,9 +150,21 @@ variable "container_registry_webhooks" {
     scope          = string
     custom_headers = map(string)
   }))
-  default     = null
+  default = {
+    example-webhook = {
+      service_uri = "https://example.com/webhook"
+      actions     = ["push", "delete"]
+      status      = "enabled"
+      scope       = "repository:core/image"
+      custom_headers = {
+        Authorization = "Bearer exampletoken"
+        X-Custom-Id   = "webhook-123"
+      }
+    }
+  }
   description = "Webhooks configuration for ACR."
 }
+
 
 variable "georeplications" {
   type = list(object({
@@ -179,6 +191,12 @@ variable "manual_connection" {
   description = "Indicates whether the connection is manual"
   type        = bool
   default     = false
+}
+
+variable "enable_data_endpoint" {
+  type        = bool
+  default     = true
+  description = "Enable data endpoint for the container registry."
 }
 
 ##-----------------------------------------------------------------------------

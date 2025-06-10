@@ -114,10 +114,8 @@ module "vault" {
 # Private DNS Zone
 # ------------------------------------------------------------------------------
 module "private_dns_zone" {
-  source              = "git@github.com:terraform-az-modules/terraform-azure-private-dns.git?ref=feat/beta"
+  source              = "git::https://github.com/ravimalvia10/private-dns-zone.git?ref=feat/private-dns-zone"
   resource_group_name = module.resource_group.resource_group_name
-
-
   private_dns_config = [
     {
       resource_type = "container_registry"
@@ -136,16 +134,11 @@ module "container-registry" {
     azurerm.dns_sub  = azurerm.peer
     azurerm.main_sub = azurerm
   }
-  name                = "core"
-  environment         = "dev"
-  label_order         = ["name", "environment", "location"]
-  resource_group_name = module.resource_group.resource_group_name
-  location            = module.resource_group.resource_group_location
-
-  container_registry_config = {
-    sku = "Premium"
-  }
-
+  name                        = "core"
+  environment                 = "dev"
+  label_order                 = ["name", "environment", "location"]
+  resource_group_name         = module.resource_group.resource_group_name
+  location                    = module.resource_group.resource_group_location
   depends_on                  = [module.private_dns_zone]
   log_analytics_workspace_id  = module.log-analytics.workspace_id
   subnet_id                   = module.subnet.default_subnet_id[0]
@@ -154,7 +147,7 @@ module "container-registry" {
   key_vault_rbac_auth_enabled = true
   key_vault_id                = module.vault.id
   enable_diagnostic           = true
-  private_dns_zone_id         = [module.private_dns_zone.private_dns_zone_ids["container_registry"]]
+  private_dns_zone_id       = module.private-dns-zone.private_dns_zone_ids.container_registry
   logs = [
     {
       category = "ContainerRegistryLoginEvents"

@@ -14,15 +14,12 @@ module "container-registry" {
     azurerm.dns_sub  = azurerm.peer,
     azurerm.main_sub = azurerm
   }
-  source              = "../../"
-  name                = "core"
-  environment         = "dev"
-  label_order         = ["name", "environment", "location"]
-  resource_group_name = "acr-test"
-  location            = "centralindia"
-  container_registry_config = {
-    sku = "Premium"
-  }
+  source                  = "../../"
+  name                    = "core"
+  environment             = "dev"
+  label_order             = ["name", "environment", "location"]
+  resource_group_name     = "acr-test"
+  location                = "centralindia"
   enable_private_endpoint = false
   ##----------------------------------------------------------------------------- 
   ## To be mentioned for private endpoint, because private endpoint is enabled by default.
