@@ -22,6 +22,11 @@ module "container-registry" {
   location                = "centralindia"
   enable_private_endpoint = false
   enable_content_trust    = true
+  container_registry_config = {
+    sku                       = "Premium"
+    quarantine_policy_enabled = true
+    zone_redundancy_enabled   = true
+  }
   ##----------------------------------------------------------------------------- 
   ## To be mentioned for private endpoint, because private endpoint is enabled by default.
   ## To disable private endpoint set 'enable_private_endpoint' variable = false and than no need to specify following variable  

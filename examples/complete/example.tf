@@ -161,4 +161,9 @@ module "container-registry" {
       enabled  = true
     }
   ]
+  container_registry_config = {
+    sku                       = "Premium"
+    quarantine_policy_enabled = true
+    zone_redundancy_enabled   = true
+  }
 }
