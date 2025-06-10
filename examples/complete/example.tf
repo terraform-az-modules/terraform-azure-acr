@@ -95,7 +95,7 @@ module "vault" {
   location                      = module.resource_group.resource_group_location
   virtual_network_id            = module.vnet.vnet_id
   subnet_id                     = module.subnet.default_subnet_id[0]
-  public_network_access_enabled = true
+  public_network_access_enabled = false
 
   network_acls = {
     bypass         = "AzureServices"
