@@ -1,6 +1,5 @@
 provider "azurerm" {
   features {}
-
 }
 
 provider "azurerm" {
@@ -22,6 +21,7 @@ module "container-registry" {
   resource_group_name     = "test"
   location                = "centralindia"
   enable_private_endpoint = false
+  enable_content_trust    = true
   ##----------------------------------------------------------------------------- 
   ## To be mentioned for private endpoint, because private endpoint is enabled by default.
   ## To disable private endpoint set 'enable_private_endpoint' variable = false and than no need to specify following variable  

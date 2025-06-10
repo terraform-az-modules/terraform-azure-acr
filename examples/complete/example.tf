@@ -129,7 +129,6 @@ module "private_dns_zone" {
 # ------------------------------------------------------------------------------
 module "container-registry" {
   source = "../../"
-
   providers = {
     azurerm.dns_sub  = azurerm.peer
     azurerm.main_sub = azurerm
@@ -143,7 +142,7 @@ module "container-registry" {
   log_analytics_workspace_id  = module.log-analytics.workspace_id
   subnet_id                   = module.subnet.default_subnet_id[0]
   encryption                  = true
-  enable_content_trust        = false
+  enable_content_trust        = true
   key_vault_rbac_auth_enabled = true
   key_vault_id                = module.vault.id
   enable_diagnostic           = true
@@ -156,7 +155,6 @@ module "container-registry" {
       category = "ContainerRegistryRepositoryEvents"
     }
   ]
-
   metrics = [
     {
       category = "AllMetrics"
