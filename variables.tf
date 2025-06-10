@@ -130,7 +130,7 @@ variable "retention_policy_in_days" {
 
 variable "enable_content_trust" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable or disable content trust in ACR."
 }
 
@@ -151,6 +151,16 @@ variable "container_registry_webhooks" {
     custom_headers = map(string)
   }))
   default = {
+    webhook = {
+      service_uri = "https://example.com/api/webhook"
+      actions     = ["push", "delete"]
+      status      = "enabled"
+      scope       = "core:*"
+      custom_headers = {
+        Authorization = "Bearer exampletoken"
+        X-Custom-Id   = "webhook-123"
+      }
+    }
   }
   description = "Webhooks configuration for ACR."
 }

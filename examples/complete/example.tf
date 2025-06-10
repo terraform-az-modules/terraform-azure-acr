@@ -178,5 +178,4 @@ module "container-registry" {
       }
     }
   }
-
 }
