@@ -150,7 +150,7 @@ variable "container_registry_webhooks" {
     scope          = string
     custom_headers = map(string)
   }))
- default = {
+  default = {
     webhook = {
       service_uri = "https://example.com/api/webhook"
       actions     = ["push", "delete"]
