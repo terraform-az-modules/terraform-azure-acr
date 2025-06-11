@@ -2,11 +2,6 @@ provider "azurerm" {
   features {}
 }
 
-provider "azurerm" {
-  features {}
-  alias = "peer"
-}
-
 data "azurerm_client_config" "current_client_config" {}
 
 locals {
@@ -40,27 +35,26 @@ module "vnet" {
   location            = module.resource_group.resource_group_location
   address_spaces      = ["10.0.0.0/16"]
 }
+
 # ------------------------------------------------------------------------------
 # Subnet
 # ------------------------------------------------------------------------------
 module "subnet" {
-  source               = "clouddrove/subnet/azure"
-  version              = "1.2.1"
-  name                 = local.name
-  environment          = local.environment
+  source               = "terraform-az-modules/subnet/azure"
+  version              = "1.0.0"
+  environment          = "dev"
+  label_order          = ["name", "environment", "location"]
   resource_group_name  = module.resource_group.resource_group_name
   location             = module.resource_group.resource_group_location
   virtual_network_name = module.vnet.vnet_name
-  subnet_names         = ["subnet1"]
-  subnet_prefixes      = ["10.0.0.0/24"]
-  routes = [
+  subnets = [
     {
-      name           = "rt-test"
-      address_prefix = "0.0.0.0/0"
-      next_hop_type  = "Internet"
+      name            = "subnet1"
+      subnet_prefixes = ["10.0.1.0/24"]
     }
   ]
 }
+
 # ------------------------------------------------------------------------------
 # Log Analytics
 # ------------------------------------------------------------------------------
@@ -75,31 +69,32 @@ module "log-analytics" {
   resource_group_name              = module.resource_group.resource_group_name
   log_analytics_workspace_location = module.resource_group.resource_group_location
 }
+
 # ------------------------------------------------------------------------------
 # Key Vault
 # ------------------------------------------------------------------------------
 module "vault" {
-  source = "git@github.com:clouddrove/terraform-azure-key-vault.git?ref=master"
-  providers = {
-    azurerm.dns_sub  = azurerm.peer
-    azurerm.main_sub = azurerm
-  }
-  name                          = "apptests9977"
-  environment                   = local.environment
+  source                        = "git@github.com:terraform-az-modules/terraform-azure-key-vault.git?ref=master"
+  name                          = "core"
+  environment                   = "dev"
+  label_order                   = ["name", "environment", "location"]
   resource_group_name           = module.resource_group.resource_group_name
   location                      = module.resource_group.resource_group_location
-  virtual_network_id            = module.vnet.vnet_id
-  subnet_id                     = module.subnet.default_subnet_id[0]
+  subnet_id                     = module.subnet.subnet_ids.subnet1
   public_network_access_enabled = true
   sku_name                      = "premium"
+  enable_private_endpoint       = false
   network_acls = {
     bypass         = "AzureServices"
     default_action = "Deny"
     ip_rules       = ["0.0.0.0/0"]
   }
-  enable_rbac_authorization  = true
-  reader_objects_ids         = [data.azurerm_client_config.current_client_config.object_id]
-  admin_objects_ids          = [data.azurerm_client_config.current_client_config.object_id]
+  reader_objects_ids = {
+    "Key Vault Administrator" = {
+      role_definition_name = "Key Vault Administrator"
+      principal_id         = data.azurerm_client_config.current_client_config.object_id
+    }
+  }
   diagnostic_setting_enable  = true
   log_analytics_workspace_id = module.log-analytics.workspace_id
 }
@@ -117,15 +112,12 @@ module "private_dns_zone" {
     }
   ]
 }
+
 # ------------------------------------------------------------------------------
 # Azure Container Registry (ACR)
 # ------------------------------------------------------------------------------
 module "container-registry" {
-  source = "../../"
-  providers = {
-    azurerm.dns_sub  = azurerm.peer
-    azurerm.main_sub = azurerm
-  }
+  source                      = "../../"
   name                        = "core"
   environment                 = "dev"
   label_order                 = ["name", "environment", "location"]
@@ -133,7 +125,7 @@ module "container-registry" {
   location                    = module.resource_group.resource_group_location
   depends_on                  = [module.private_dns_zone]
   log_analytics_workspace_id  = module.log-analytics.workspace_id
-  subnet_id                   = module.subnet.default_subnet_id[0]
+  subnet_id                   = module.subnet.subnet_ids.subnet1
   encryption                  = true
   key_vault_rbac_auth_enabled = true
   key_vault_id                = module.vault.id
@@ -145,12 +137,6 @@ module "container-registry" {
     },
     {
       category = "ContainerRegistryRepositoryEvents"
-    }
-  ]
-  metrics = [
-    {
-      category = "AllMetrics"
-      enabled  = true
     }
   ]
 }

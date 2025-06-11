@@ -25,13 +25,11 @@ EOT
 ##-----------------------------------------------------------------------------
 variable "name" {
   type        = string
-  default     = ""
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
 variable "environment" {
   type        = string
-  default     = ""
   description = "Environment (e.g. `prod`, `dev`, `staging`)."
 }
 
@@ -61,7 +59,6 @@ variable "repository" {
 
 variable "location" {
   type        = string
-  default     = ""
   description = "The location/region where the virtual network is created. Changing this forces a new resource to be created."
 }
 
@@ -90,7 +87,6 @@ variable "enabled" {
   default     = true
   description = "Set to false to prevent the module from creating any resources."
 }
-
 
 ###-----------------------------------------------------------------------------
 ## Azure Container Registry (ACR)
@@ -229,7 +225,7 @@ variable "azure_services_bypass" {
 
 variable "enable_private_endpoint" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enable private endpoint for ACR."
 }
 
@@ -250,7 +246,7 @@ variable "private_dns_zone_ids" {
 
 variable "enable_diagnostic" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enable diagnostic settings for ACR."
 }
 
@@ -266,6 +262,22 @@ variable "storage_account_id" {
   description = "Storage account ID for diagnostic settings destination."
 }
 
+
+variable "metric_enabled" {
+  type        = bool
+  default     = true
+  description = "Boolean flag to specify whether Metrics should be enabled for the Container Registry. Defaults to true."
+}
+
+variable "logs" {
+  type = list(object({
+    category_group = optional(string)
+    category       = optional(string)
+  }))
+  default     = []
+  description = "List of log configurations for diagnostic settings. Each object can specify either category_group or category."
+}
+
 ##-----------------------------------------------------------------------------
 ## Key Vault
 ##-----------------------------------------------------------------------------
@@ -275,11 +287,28 @@ variable "key_vault_id" {
   description = "Azure Key Vault ID for integration."
 }
 
-variable "enable_rotation_policy" {
-  type        = bool
-  default     = false
-  description = "Enable rotation policy for secrets."
+variable "rotation_policy_config" {
+  type = object({
+    enabled              = bool
+    time_before_expiry   = optional(string, "P30D")
+    expire_after         = optional(string, "P90D")
+    notify_before_expiry = optional(string, "P29D")
+  })
+  default = {
+    enabled              = false
+    time_before_expiry   = "P30D"
+    expire_after         = "P90D"
+    notify_before_expiry = "P29D"
+  }
+  description = "Rotation policy configuration for Key Vault keys."
 }
+
+variable "key_permissions" {
+  type        = list(string)
+  default     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+  description = "List of key permissions for the Key Vault key."
+}
+
 
 variable "key_vault_rbac_auth_enabled" {
   type        = bool
@@ -293,20 +322,14 @@ variable "key_expiration_date" {
   default     = "2028-12-31T23:59:59Z" # ISO 8601 format
 }
 
-variable "metrics" {
-  type = list(object({
-    category = string
-    enabled  = optional(bool, true)
-  }))
-  default     = []
-  description = "List of metric configurations for diagnostic settings. Each object contains category and enabled status."
+variable "key_type" {
+  description = "The type of the key to create in Key Vault."
+  type        = string
+  default     = "RSA-HSM"
 }
 
-variable "logs" {
-  type = list(object({
-    category_group = optional(string)
-    category       = optional(string)
-  }))
-  default     = []
-  description = "List of log configurations for diagnostic settings. Each object can specify either category_group or category."
+variable "key_size" {
+  description = "The size of the RSA key in bits."
+  type        = number
+  default     = 2048
 }

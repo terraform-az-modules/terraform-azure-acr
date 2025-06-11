@@ -48,7 +48,7 @@ resource "azurerm_container_registry" "main" {
       dynamic "ip_rule" {
         for_each = network_rule_set.value.ip_rule
         content {
-          action   = "Allow"
+          action   = ip.rule.value.default_action
           ip_range = ip_rule.value.ip_range
         }
       }
@@ -123,25 +123,18 @@ resource "azurerm_key_vault_key" "kvkey" {
   count           = var.enabled && var.encryption ? 1 : 0
   name            = var.resource_position_prefix ? format("cmk-key-acr-%s", local.name) : format("%s-cmk-key-acr", local.name)
   key_vault_id    = var.key_vault_id
-  key_type        = "RSA-HSM"
-  key_size        = 2048
+  key_type        = var.key_type
+  key_size        = var.key_size
   expiration_date = var.key_expiration_date
-  key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey",
-  ]
+  key_opts        = var.key_permissions
   dynamic "rotation_policy" {
-    for_each = var.enable_rotation_policy ? [1] : []
+    for_each = var.rotation_policy_config.enabled ? [1] : []
     content {
       automatic {
-        time_before_expiry = "P30D"
+        time_before_expiry = var.rotation_policy_config.time_before_expiry
       }
-      expire_after         = "P90D"
-      notify_before_expiry = "P29D"
+      expire_after         = var.rotation_policy_config.expire_after
+      notify_before_expiry = var.rotation_policy_config.notify_before_expiry
     }
   }
 }
@@ -201,10 +194,10 @@ resource "azurerm_monitor_diagnostic_setting" "acr-diag" {
     }
   }
   dynamic "metric" {
-    for_each = var.metrics
+    for_each = var.metric_enabled ? ["AllMetrics"] : []
     content {
-      category = lookup(metric.value, "category", null)
-      enabled  = lookup(metric.value, "enabled", true)
+      category = metric.value
+      enabled  = true
     }
   }
 }
