@@ -21,25 +21,6 @@ module "container-registry" {
   resource_group_name     = "test"
   location                = "centralindia"
   enable_private_endpoint = false
-  enable_content_trust    = true
-  container_registry_config = {
-    sku                       = "Premium"
-    quarantine_policy_enabled = true
-    zone_redundancy_enabled   = true
-  }
-  container_registry_webhooks = {
-    webhook1 = {
-      service_uri = "https://example.com/api/webhook"
-      actions     = ["push", "delete"]
-      status      = "enabled"
-      scope       = "core:*"
-      custom_headers = {
-        Authorization = "Bearer exampletoken"
-        X-Custom-Id   = "webhook-123"
-      }
-    }
-  }
-
   ##----------------------------------------------------------------------------- 
   ## To be mentioned for private endpoint, because private endpoint is enabled by default.
   ## To disable private endpoint set 'enable_private_endpoint' variable = false and than no need to specify following variable  

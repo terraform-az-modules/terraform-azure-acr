@@ -130,7 +130,7 @@ variable "retention_policy_in_days" {
 
 variable "enable_content_trust" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enable or disable content trust in ACR."
 }
 
@@ -269,7 +269,6 @@ variable "storage_account_id" {
 ##-----------------------------------------------------------------------------
 ## Key Vault
 ##-----------------------------------------------------------------------------
-
 variable "key_vault_id" {
   type        = string
   default     = null
