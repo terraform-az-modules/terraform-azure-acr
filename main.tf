@@ -185,7 +185,6 @@ resource "azurerm_monitor_diagnostic_setting" "acr-diag" {
   target_resource_id         = azurerm_container_registry.main[0].id
   storage_account_id         = var.storage_account_id
   log_analytics_workspace_id = var.log_analytics_workspace_id
-
   dynamic "enabled_log" {
     for_each = var.logs
     content {
@@ -193,11 +192,10 @@ resource "azurerm_monitor_diagnostic_setting" "acr-diag" {
       category       = lookup(enabled_log.value, "category", null)
     }
   }
-  dynamic "metric" {
-    for_each = var.metric_enabled ? ["AllMetrics"] : []
-    content {
-      category = metric.value
-      enabled  = true
-    }
+  dynamic "enabled_metric" {
+  for_each = var.metric_enabled ? ["AllMetrics"] : []
+  content {
+    category = enabled_metric.value
   }
+}
 }

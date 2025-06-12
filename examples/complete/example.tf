@@ -83,7 +83,7 @@ module "vault" {
   subnet_id                     = module.subnet.subnet_ids.subnet1
   public_network_access_enabled = true
   sku_name                      = "premium"
-  enable_private_endpoint       = false
+  private_dns_zone_ids          = module.private_dns_zone.private_dns_zone_ids.key_vault
   network_acls = {
     bypass         = "AzureServices"
     default_action = "Deny"
@@ -108,6 +108,10 @@ module "private_dns_zone" {
   private_dns_config = [
     {
       resource_type = "container_registry"
+      vnet_ids      = [module.vnet.vnet_id]
+    },
+    {
+      resource_type = "key_vault"
       vnet_ids      = [module.vnet.vnet_id]
     }
   ]

@@ -262,7 +262,6 @@ variable "storage_account_id" {
   description = "Storage account ID for diagnostic settings destination."
 }
 
-
 variable "metric_enabled" {
   type        = bool
   default     = true
