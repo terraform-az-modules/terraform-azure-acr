@@ -65,7 +65,7 @@ output "container_registry_webhook_id" {
 ##-----------------------------------------------------------------------------
 
 output "container_registry_private_endpoint" {
-  value       = var.enable_private_endpoint ? azurerm_private_endpoint.pep1[0].id : null
+  value       = var.enable_private_endpoint ? azurerm_private_endpoint.main[0].id : null
   description = "The ID of the newly created Azure Container Registry Private Endpoint, if enabled."
 }
 
@@ -74,7 +74,7 @@ output "container_registry_private_endpoint" {
 ##-----------------------------------------------------------------------------
 
 output "key_vault_key_id" {
-  value       = var.encryption ? azurerm_key_vault_key.kvkey[0].id : null
+  value       = var.encryption ? azurerm_key_vault_key.main[0].id : null
   description = "The ID of the newly created Key Vault Key used for ACR encryption."
 }
 
