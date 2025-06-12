@@ -173,7 +173,7 @@ variable "georeplications" {
 
 variable "encryption" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable or disable encryption for ACR."
 }
 
@@ -246,7 +246,7 @@ variable "private_dns_zone_ids" {
 
 variable "enable_diagnostic" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable diagnostic settings for ACR."
 }
 

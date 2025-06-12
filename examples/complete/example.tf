@@ -59,8 +59,8 @@ module "subnet" {
 # Log Analytics
 # ------------------------------------------------------------------------------
 module "log-analytics" {
-  source                           = "clouddrove/log-analytics/azure"
-  version                          = "1.1.0"
+  source                           = "terraform-az-modules/log-analytics/azure"
+  version                          = "1.0.0"
   name                             = local.name
   environment                      = local.environment
   create_log_analytics_workspace   = true
@@ -74,7 +74,8 @@ module "log-analytics" {
 # Key Vault
 # ------------------------------------------------------------------------------
 module "vault" {
-  source                        = "git@github.com:terraform-az-modules/terraform-azure-key-vault.git?ref=master"
+  source                        = "terraform-az-modules/vault/azure"
+  version                       = "1.0.0"
   name                          = "core"
   environment                   = "dev"
   label_order                   = ["name", "environment", "location"]
@@ -103,7 +104,8 @@ module "vault" {
 # Private DNS Zone
 # ------------------------------------------------------------------------------
 module "private_dns_zone" {
-  source              = "git@github.com:terraform-az-modules/terraform-azure-private-dns.git?ref=feat/beta"
+  source              = "terraform-az-modules/private-dns-zone/azure"
+  version             = "1.0.0"
   resource_group_name = module.resource_group.resource_group_name
   private_dns_config = [
     {
@@ -121,20 +123,17 @@ module "private_dns_zone" {
 # Azure Container Registry (ACR)
 # ------------------------------------------------------------------------------
 module "container-registry" {
-  source                      = "../../"
-  name                        = "core"
-  environment                 = "dev"
-  label_order                 = ["name", "environment", "location"]
-  resource_group_name         = module.resource_group.resource_group_name
-  location                    = module.resource_group.resource_group_location
-  depends_on                  = [module.private_dns_zone]
-  log_analytics_workspace_id  = module.log-analytics.workspace_id
-  subnet_id                   = module.subnet.subnet_ids.subnet1
-  encryption                  = true
-  key_vault_rbac_auth_enabled = true
-  key_vault_id                = module.vault.id
-  enable_diagnostic           = true
-  private_dns_zone_ids        = module.private_dns_zone.private_dns_zone_ids.container_registry
+  source                     = "../../"
+  name                       = "core"
+  environment                = "dev"
+  label_order                = ["name", "environment", "location"]
+  resource_group_name        = module.resource_group.resource_group_name
+  location                   = module.resource_group.resource_group_location
+  depends_on                 = [module.private_dns_zone]
+  log_analytics_workspace_id = module.log-analytics.workspace_id
+  subnet_id                  = module.subnet.subnet_ids.subnet1
+  key_vault_id               = module.vault.id
+  private_dns_zone_ids       = module.private_dns_zone.private_dns_zone_ids.container_registry
   logs = [
     {
       category = "ContainerRegistryLoginEvents"

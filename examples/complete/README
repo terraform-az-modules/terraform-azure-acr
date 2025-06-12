@@ -27,11 +27,11 @@ No providers are explicitly defined in this example.
 |-------------------|--------------------------------------------------------------------|---------|
 | resource_group    | terraform-az-modules/resource-group/azure                          | 1.0.0   |
 | vnet              | terraform-az-modules/vnet/azure                                    | 1.0.0   |
-| subnet            | clouddrove/subnet/azure                                            | 1.2.1   |
-| log-analytics     | clouddrove/log-analytics/azure                                     | 1.1.0   |
-| vault             | git@github.com:clouddrove/terraform-azure-key-vault.git?ref=master | master  |
-| private_dns_zone  | git@github.com:terraform-az-modules/terraform-azure-private-dns.git?ref=feat/beta | beta    |
-| container_regsitry | ../../                       | n/a|
+| subnet            | terraform-az-modules/subnet/azure                                  | 1.0.0   |
+| log-analytics     | terraform-az-modules/log-analytics/azure                           | 1.0.0   |
+| vault             | terraform-az-modules/vault/azure                                   | 1.0.0   |
+| private_dns_zone  | terraform-az-modules/private_dns_zone/azure                        | 1.0.0   |
+| container_regsitry | ../../                                                            | n/a|
 
 
 

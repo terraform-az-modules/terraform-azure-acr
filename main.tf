@@ -65,7 +65,7 @@ resource "azurerm_container_registry" "main" {
   dynamic "encryption" {
     for_each = var.encryption && var.container_registry_config.sku == "Premium" ? ["encryption"] : []
     content {
-      key_vault_key_id   = azurerm_key_vault_key.kvkey[0].id
+      key_vault_key_id   = azurerm_key_vault_key.main[0].id
       identity_client_id = azurerm_user_assigned_identity.identity[0].client_id
     }
   }
@@ -118,7 +118,7 @@ resource "azurerm_container_registry_webhook" "main" {
 ##-----------------------------------------------------------------------------
 ## Key Vault Key - Deploy encryption key for ACR content
 ##-----------------------------------------------------------------------------
-resource "azurerm_key_vault_key" "kvkey" {
+resource "azurerm_key_vault_key" "main" {
   depends_on      = [azurerm_role_assignment.identity_assigned]
   count           = var.enabled && var.encryption ? 1 : 0
   name            = var.resource_position_prefix ? format("cmk-key-acr-%s", local.name) : format("%s-cmk-key-acr", local.name)
@@ -152,7 +152,7 @@ resource "azurerm_user_assigned_identity" "identity" {
 #-----------------------------------------------------------------------------
 ## Private Endpoint - Deploy private network access to ACR
 ##-----------------------------------------------------------------------------
-resource "azurerm_private_endpoint" "pep1" {
+resource "azurerm_private_endpoint" "endpoint" {
   count                         = var.enabled && var.enable_private_endpoint ? 1 : 0
   name                          = var.resource_position_prefix ? format("pe-acr-%s", local.name) : format("%s-pe-acr", local.name)
   location                      = var.location
@@ -193,9 +193,9 @@ resource "azurerm_monitor_diagnostic_setting" "acr-diag" {
     }
   }
   dynamic "enabled_metric" {
-  for_each = var.metric_enabled ? ["AllMetrics"] : []
-  content {
-    category = enabled_metric.value
+    for_each = var.metric_enabled ? ["AllMetrics"] : []
+    content {
+      category = enabled_metric.value
+    }
   }
-}
 }
