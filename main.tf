@@ -152,7 +152,7 @@ resource "azurerm_user_assigned_identity" "identity" {
 #-----------------------------------------------------------------------------
 ## Private Endpoint - Deploy private network access to ACR
 ##-----------------------------------------------------------------------------
-resource "azurerm_private_endpoint" "endpoint" {
+resource "azurerm_private_endpoint" "main" {
   count                         = var.enabled && var.enable_private_endpoint ? 1 : 0
   name                          = var.resource_position_prefix ? format("pe-acr-%s", local.name) : format("%s-pe-acr", local.name)
   location                      = var.location
