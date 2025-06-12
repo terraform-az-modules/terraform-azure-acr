@@ -1,0 +1,66 @@
+<!-- BEGIN_TF_DOCS -->
+
+# Azure Container Registry Module
+
+This example demonstrates how to use the `terraform-azure-acr` module to deploy an Azure Virtual Network.
+
+---
+
+## ✅ Requirements
+
+| Name      | Version   |
+|-----------|-----------|
+| Terraform | >= 1.6.6  |
+| Azurerm   | >= 3.90.0 |
+
+---
+
+## 🔌 Providers
+
+No providers are explicitly defined in this example.
+
+---
+
+## 📦 Modules
+
+| Name              | Source                                                             | Version |
+|-------------------|--------------------------------------------------------------------|---------|
+| resource_group    | terraform-az-modules/resource-group/azure                          | 1.0.0   |
+| vnet              | terraform-az-modules/vnet/azure                                    | 1.0.0   |
+| subnet            | terraform-az-modules/subnet/azure                                  | 1.0.0   |
+| log-analytics     | terraform-az-modules/log-analytics/azure                           | 1.0.0   |
+| vault             | terraform-az-modules/vault/azure                                   | 1.0.0   |
+| private_dns_zone  | terraform-az-modules/private_dns_zone/azure                        | 1.0.0   |
+| container_regsitry | ../../                                                            | n/a|
+
+
+
+
+
+---
+
+## 🏗️ Resources
+
+No additional resources are directly created in this example.
+
+---
+
+## 🔧 Inputs
+
+_No input variables are defined in this example._
+
+---
+
+## 📤 Outputs
+
+|| Name                                      | Description                                                                                           |
+|-------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| `container_registry_id`                   | The ID of the Container Registry                                                                      |
+| `container_registry_private_endpoint`     | The ID of the Azure Container Registry Private Endpoint                                               |
+| `container_registry_login_server`         | The URL that can be used to log into the Container Registry                                           |
+| `container_registry_admin_username`       | The Username associated with the Container Registry Admin account                                     |
+| `container_registry_identity_principal_id`| The Principal ID for the Service Principal associated with the Managed Service Identity of the Container Registry |
+| `container_registry_identity_tenant_id`   | The Tenant ID for the Service Principal associated with the Managed Service Identity of the Container Registry |
+
+
+<!-- END_TF_DOCS -->

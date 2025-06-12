@@ -5,45 +5,64 @@
 #
 
 # Name of this project
-name : Terraform Azure Module Template
+name: Terraform Azure Container Registry
 
 # License of this project
 license: "APACHE"
 
 # Canonical GitHub repo
-github_repo: terraform-az-modules/terraform-module-template
+github_repo: terraform-az-modules/terraform-azure-acr
 
 # Badges to display
 badges:
-  - name: "Terraform"
-    image: "https://img.shields.io/badge/Terraform-v0.13-green"
-    url: "https://www.terraform.io"
-  - name: "Licence"
-    image: "https://img.shields.io/badge/License-APACHE-blue.svg"
-    url: "LICENSE.md"
-  - name: "Changelog"
-    image: "https://img.shields.io/badge/Changelog-blue"
-    url: "CHANGELOG.md"
+- name: "Terraform"
+  image: "https://img.shields.io/badge/Terraform-v0.13-green"
+  url: "https://www.terraform.io"
+- name: "Licence"
+  image: "https://img.shields.io/badge/License-APACHE-blue.svg"
+  url: "LICENSE.md"
+- name: "Changelog"
+  image: "https://img.shields.io/badge/Changelog-blue"
+  url: "CHANGELOG.md"
 
 # Prerequesties to display
 prerequesties:
-  - name: Terraform
-    url: https://learn.hashicorp.com/terraform/getting-started/install.html
-    version: ">= 1.6.6"
+- name: Terraform
+  url: https://learn.hashicorp.com/terraform/getting-started/install.html
+  version: ">= 1.6.6"
 
 providers:
-  - name: azure
-    url: https://azure.microsoft.com/
-    version: ">= 3.116.0"
+- name: azure
+  url: https://azure.microsoft.com/
+  version: ">= 4.31.0"
 
 #  description of this project
 description: |-
-  Terraform Azure Module Template to create new modules using this as baseline
+  Terraform Azure Container Registry (ACR) module is a Terraform module that allows you to create and manage Azure Container Registry.
 
-# How to use this project
 # How to use this project
 usage: |-
   Here are some examples of how you can use this module in your inventory structure:
   ```hcl
-    locals {}
+  module "container-registry" {
+  source                     = "../../"
+  name                       = "core"
+  environment                = "dev"
+  label_order                = ["name", "environment", "location"]
+  resource_group_name        = module.resource_group.resource_group_name
+  location                   = module.resource_group.resource_group_location
+  depends_on                 = [module.private_dns_zone]
+  log_analytics_workspace_id = module.log-analytics.workspace_id
+  subnet_id                  = module.subnet.subnet_ids.subnet1
+  key_vault_id               = module.vault.id
+  private_dns_zone_ids       = module.private_dns_zone.private_dns_zone_ids.container_registry
+  logs = [
+    {
+      category = "ContainerRegistryLoginEvents"
+    },
+    {
+      category = "ContainerRegistryRepositoryEvents"
+    }
+  ]
+  }
     ```
