@@ -2,7 +2,7 @@
 
 # Azure Container Registry Module
 
-This example demonstrates how to use the `terraform-azure-acr` module to deploy an Azure Virtual Network.
+This example demonstrates how to use the `terraform-azure-acr` module to deploy an Azure Container Registry.
 
 ---
 
@@ -23,15 +23,15 @@ No providers are explicitly defined in this example.
 
 ## 📦 Modules
 
-| Name              | Source                                                             | Version |
-|-------------------|--------------------------------------------------------------------|---------|
-| resource_group    | terraform-az-modules/resource-group/azure                          | 1.0.0   |
-| vnet              | terraform-az-modules/vnet/azure                                    | 1.0.0   |
-| subnet            | terraform-az-modules/subnet/azure                                  | 1.0.0   |
-| log-analytics     | terraform-az-modules/log-analytics/azure                           | 1.0.0   |
-| vault             | terraform-az-modules/vault/azure                                   | 1.0.0   |
-| private_dns_zone  | terraform-az-modules/private_dns_zone/azure                        | 1.0.0   |
-| container_regsitry | ../../                                                            | n/a|
+| Name               | Source                                                      | Version |
+|--------------------|-------------------------------------------------------------|---------|
+| resource_group     | terraform-az-modules/resource-group/azure                   | 1.0.0   |
+| vnet               | terraform-az-modules/vnet/azure                             | 1.0.0   |
+| subnet             | terraform-az-modules/subnet/azure                           | 1.0.0   |
+| log-analytics      | terraform-az-modules/log-analytics/azure                    | 1.0.0   |
+| vault              | terraform-az-modules/vault/azure                            | 1.0.0   |
+| private_dns_zone   | terraform-az-modules/private-dns-zone/azure                 | 1.0.0   |
+| container_registry | ../../                                                      | n/a     |
 
 
 
