@@ -2,7 +2,7 @@
 
 # Azure Container Registry Module
 
-This example demonstrates how to use the `terraform-azure-acr` module to deploy an Azure Virtual Network.
+This example demonstrates how to use the `terraform-azure-acr` module to deploy an Azure Container Registry.
 
 ---
 

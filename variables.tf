@@ -47,7 +47,7 @@ variable "extra_tags" {
 
 variable "repository" {
   type        = string
-  default     = "https://github.com/terraform-az-modules/terraform-azure-nsg"
+  default     = "https://github.com/terraform-az-modules/terraform-azure-acr"
   description = "Terraform current module repo"
 
   validation {
